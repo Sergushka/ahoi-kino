@@ -5,6 +5,8 @@ import (
 	"github.com/sergushka/ahoi-kino/model"
 )
 
+const statsRefId = "--stats--"
+
 type MovieRepository interface {
 	AddMovie(movie *model.Movie) (*model.Movie, error)
 	GetMovies() ([]model.Movie, error)
@@ -52,23 +54,25 @@ func (*repo) GetMovies() (movies []model.Movie, err error) {
 		return
 	}
 
+	defer client.Close()
+
 	movies = make([]model.Movie, len(docs))
 	var movie model.Movie
 
 	i := 0
 	for _, doc := range docs {
-		if len(doc.Data()) > 1 {
-			err := doc.DataTo(&movie)
-			if err != nil {
-				logger.Println(err)
-				continue
-			}
-			movies[i] = movie
-			i++
+		if doc.Ref.ID == statsRefId {
+			continue
 		}
+		err := doc.DataTo(&movie)
+		if err != nil {
+			logger.Println(err)
+			continue
+		}
+		movie.Id = doc.Ref.ID
+		movies[i] = movie
+		i++
 	}
-
-	defer client.Close()
 
 	return
 }

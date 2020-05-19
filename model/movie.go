@@ -1,37 +1,39 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Movie struct {
-	Id                  int              `json:"id"`
-	Adult               bool             `json:"adult"`
-	BackdropPath        string           `json:"backdrop_path"`
-	BelongsToCollection Collection       `json:"belongs_to_collection"`
-	Budget              int              `json:"budget"`
-	CreatedAt           time.Duration    `json:"created_at"`
-	DirectLink          string           `json:"direct_link"`
-	Genres              []Genre          `json:"genres"`
-	Homepage            string           `json:"homepage"`
-	ImdbId              string           `json:"imdb_id"`
-	Name                string           `json:"name"`
-	OriginalLanguage    string           `json:"original_language"`
-	OriginalTitle       string           `json:"original_title"`
-	Overview            string           `json:"overview"`
-	Popularity          float64          `json:"popularity"`
-	PosterPath          string           `json:"poster_path"`
-	ProductionCompanies []Company        `json:"production_companies"`
-	ProductionCountries []Country        `json:"production_countries"`
-	ReleaseDate         string           `json:"release_date"`
-	Revenue             int              `json:"revenue"`
-	Runtime             int              `json:"runtime"`
-	Screens             []ScreenShot     `json:"screens"`
-	SpokenLanguages     []SpokenLanguage `json:"spoken_languages"`
-	Status              string           `json:"status"`
-	Tagline             string           `json:"tagline"`
-	Title               string           `json:"title"`
-	TmdbId              int              `json:"tmdb_id"`
-	UserUid             string           `json:"user_uid"`
-	Video               bool             `json:"video"`
-	VoteAverage         float64          `json:"vote_average"`
-	VoteCount           int              `json:"vote_count"`
+	Id                    string           `json:"id,omitempty"`
+	Adult                 bool             `json:"adult,omitempty"`
+	Backdrop_Path         string           `json:"backdrop_path,omitempty"`
+	Belongs_To_Collection *Collection      `json:"belongs_to_collection,omitempty"`
+	Budget                int              `json:"budget,omitempty"`
+	CreatedAt             time.Duration    `json:"created_at,omitempty"`
+	DirectLink            string           `json:"direct_link,omitempty"`
+	Genres                []Genre          `json:"genres,omitempty"`
+	Homepage              string           `json:"homepage,omitempty"`
+	Imdb_Id               string           `json:"imdb_id,omitempty"`
+	Name                  string           `json:"name,omitempty"`
+	Original_Language     string           `json:"original_language,omitempty"`
+	Original_Title        string           `json:"original_title,omitempty"`
+	Overview              string           `json:"overview,omitempty"`
+	Popularity            float64          `json:"popularity,omitempty"`
+	Poster_Path           string           `json:"poster_path,omitempty"`
+	Production_Companies  []Company        `json:"production_companies,omitempty"`
+	Production_Countries  []Country        `json:"production_countries,omitempty"`
+	Release_Date          string           `json:"release_date,omitempty"`
+	Revenue               int              `json:"revenue,omitempty"`
+	Runtime               int              `json:"runtime,omitempty"`
+	Screens               []ScreenShot     `json:"screens,omitempty"`
+	Spoken_Languages      []SpokenLanguage `json:"spoken_languages,omitempty"`
+	Status                string           `json:"status,omitempty"`
+	Tagline               string           `json:"tagline,omitempty"`
+	Title                 string           `json:"title,omitempty"`
+	Tmdb_Id               int              `json:"tmdb_id,omitempty"`
+	UserUid               string           `json:"user_uid,omitempty"`
+	Video                 bool             `json:"video,omitempty"`
+	Vote_Average          float64          `json:"vote_average,omitempty"`
+	Vote_Count            int              `json:"vote_count,omitempty"`
 }

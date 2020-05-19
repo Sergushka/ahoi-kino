@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/sergushka/ahoi-kino/db"
 	"github.com/sergushka/ahoi-kino/model"
+	"github.com/sergushka/ahoi-kino/utils"
 	"net/http"
 )
 
@@ -11,14 +12,18 @@ func GetMovies(w http.ResponseWriter, r *http.Request) {
 	database := db.NewTestRepository()
 	movies, err := database.GetMovies()
 
+	if err != nil {
+		utils.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
 	response := model.Response{
-		Err:    err,
 		Result: movies,
 	}
 
 	js, err := json.Marshal(response)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		utils.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
 

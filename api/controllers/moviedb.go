@@ -3,25 +3,28 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/sergushka/ahoi-kino/log"
 	"github.com/sergushka/ahoi-kino/model"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 )
 
+const Space = "%20"
+
 var (
 	logger = log.GetLogger()
 )
 
-func GetMovieByName(name string) (*model.Movie, error) {
-	name = strings.Join(strings.Fields(name), "%20")
+func GetMovieByName(movieName string) (*model.Movie, error) {
+	movieName = strings.Join(strings.Fields(movieName), Space)
 	apiKey := os.Getenv("API_KEY")
+	host := os.Getenv("HOST")
+	requestUrl := fmt.Sprintf("%s/3/search/multi?api_key=%s&language=en-US&query=%s&page=1&include_adult=false", host, apiKey, movieName)
 
-	requestUrl :=
-		"https://api.themoviedb.org/3/search/multi?api_key=" +
-			apiKey + "&language=en-US&query=" +
-			name + "&page=1&include_adult=false"
+	logger.Println(requestUrl)
 
 	resp, err := http.Get(requestUrl)
 
@@ -29,21 +32,20 @@ func GetMovieByName(name string) (*model.Movie, error) {
 		return nil, err
 	}
 
+	rb, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 
-	var m = new(model.MovieResponse)
+	var movieResponse model.MovieResponse
 
-	decoder := json.NewDecoder(resp.Body)
-
-	err = decoder.Decode(&m)
+	err = json.Unmarshal(rb, &movieResponse)
 
 	if err != nil {
 		logger.Printf("%T\n%s\n%#v\n", err, err, err)
 	}
 
-	if len(m.Results) == 0 {
-		return nil, errors.New("movie " + name + " not found")
+	if len(movieResponse.Results) == 0 {
+		return nil, errors.New(fmt.Sprintf("movie %s not found", movieName))
 	}
 
-	return &m.Results[0], nil
+	return &movieResponse.Results[0], nil
 }
