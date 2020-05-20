@@ -1,4 +1,7 @@
 /.idea/
 /ahoi-kino.iml
-/ahoy-kino-firebase-adminsdk-t8t71-11fca04300.json
 /.env
+/vendor
+/creds.json
+/https-server.key
+/https-server.crt

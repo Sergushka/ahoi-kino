@@ -74,5 +74,7 @@ func (*repo) GetMovies() (movies []model.Movie, err error) {
 		i++
 	}
 
+	logger.Printf("found movies %v", len(movies))
+
 	return
 }
