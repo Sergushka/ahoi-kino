@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/graphql-go/graphql"
+	"github.com/sergushka/ahoi-kino/api/graph"
 	"github.com/sergushka/ahoi-kino/db"
 	"github.com/sergushka/ahoi-kino/model"
 	"github.com/sergushka/ahoi-kino/utils"
@@ -13,7 +15,7 @@ import (
 
 func GetMovies(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	database := db.NewTestRepository()
+	database := db.NewRepository()
 
 	var moviesRequest model.MoviesRequest
 	err := json.NewDecoder(r.Body).Decode(&moviesRequest)
@@ -38,7 +40,7 @@ func GetMovies(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetMovie(w http.ResponseWriter, r *http.Request) {
-	database := db.NewTestRepository()
+	database := db.NewRepository()
 	id := path.Base(r.RequestURI)
 	w.Header().Set("Content-Type", "application/json")
 
@@ -59,6 +61,16 @@ func GetMovie(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.JSON(w, http.StatusFound, response)
+}
+
+func GraphQL(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query().Get("query")
+	params := graphql.Params{
+		Schema:        graph.New(),
+		RequestString: query,
+	}
+	result := graphql.Do(params)
+	json.NewEncoder(w).Encode(result)
 }
 
 func AddMovie(w http.ResponseWriter, r *http.Request) {

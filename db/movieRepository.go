@@ -16,7 +16,7 @@ type MovieRepository interface {
 
 type repo struct{}
 
-func NewTestRepository() MovieRepository {
+func NewRepository() MovieRepository {
 	return &repo{}
 }
 
@@ -146,7 +146,8 @@ func (*repo) GetMovieById(id string) (movie model.Movie, err error) {
 		return
 	}
 
-	logger.Printf("found movie %s", movie.Name)
+	movie.Id = doc.Ref.ID
+	logger.Printf("found movie %s By Id %s", movie.Name, movie.Id)
 
 	return
 }
@@ -177,6 +178,7 @@ func (*repo) GetMovieByDirectLink(directLink string) (movie model.Movie, err err
 		return
 	}
 
+	movie.Id = doc.Ref.ID
 	logger.Printf("found movie %s by directLink", movie.Name)
 
 	return

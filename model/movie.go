@@ -1,16 +1,12 @@
 package model
 
-import (
-	"time"
-)
-
 type Movie struct {
 	Id                    string           `json:"id,omitempty"`
 	Adult                 bool             `json:"adult,omitempty"`
 	Backdrop_Path         string           `json:"backdrop_path,omitempty"`
 	Belongs_To_Collection *Collection      `json:"belongs_to_collection,omitempty"`
 	Budget                int              `json:"budget,omitempty"`
-	CreatedAt             time.Duration    `json:"created_at,omitempty"`
+	CreatedAt             int              `json:"created_at,omitempty"`
 	DirectLink            string           `json:"direct_link,omitempty"`
 	Genres                []Genre          `json:"genres,omitempty"`
 	Homepage              string           `json:"homepage,omitempty"`
