@@ -2,15 +2,28 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/sergushka/ahoi-kino/db"
 	"github.com/sergushka/ahoi-kino/model"
 	"github.com/sergushka/ahoi-kino/utils"
 	"net/http"
+	"path"
 )
 
 func GetMovies(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	database := db.NewTestRepository()
-	movies, err := database.GetMovies()
+
+	var moviesRequest model.MoviesRequest
+	err := json.NewDecoder(r.Body).Decode(&moviesRequest)
+
+	if err != nil {
+		utils.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	movies, err := database.GetMovies(moviesRequest)
 
 	if err != nil {
 		utils.ERROR(w, http.StatusInternalServerError, err)
@@ -21,18 +34,31 @@ func GetMovies(w http.ResponseWriter, r *http.Request) {
 		Result: movies,
 	}
 
-	js, err := json.Marshal(response)
-	if err != nil {
-		utils.ERROR(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	utils.JSON(w, http.StatusOK, response)
 }
 
 func GetMovie(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Single movie"))
+	database := db.NewTestRepository()
+	id := path.Base(r.RequestURI)
+	w.Header().Set("Content-Type", "application/json")
+
+	if id == "" {
+		utils.ERROR(w, http.StatusNoContent, errors.New("please specify id if /movies/{id}"))
+		return
+	}
+
+	movie, err := database.GetMovieById(id)
+
+	if err != nil {
+		utils.ERROR(w, http.StatusInternalServerError, errors.New(fmt.Sprintf("movie with id %s not found", id)))
+		return
+	}
+
+	response := model.Response{
+		Result: movie,
+	}
+
+	utils.JSON(w, http.StatusFound, response)
 }
 
 func AddMovie(w http.ResponseWriter, r *http.Request) {

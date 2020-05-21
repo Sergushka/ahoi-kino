@@ -9,7 +9,9 @@ const statsRefId = "--stats--"
 
 type MovieRepository interface {
 	AddMovie(movie *model.Movie) (*model.Movie, error)
-	GetMovies() ([]model.Movie, error)
+	GetMovies(moviesRequest model.MoviesRequest) ([]model.Movie, error)
+	GetMovieById(id string) (model.Movie, error)
+	GetMovieByDirectLink(directLink string) (model.Movie, error)
 }
 
 type repo struct{}
@@ -40,7 +42,7 @@ func (*repo) AddMovie(movie *model.Movie) (*model.Movie, error) {
 	return movie, nil
 }
 
-func (*repo) GetMovies() (movies []model.Movie, err error) {
+func (*repo) GetAllMovies() (movies []model.Movie, err error) {
 	ctx := context.Background()
 	app := GetApp()
 	client := app.GetDB()
@@ -75,6 +77,107 @@ func (*repo) GetMovies() (movies []model.Movie, err error) {
 	}
 
 	logger.Printf("found movies %v", len(movies))
+
+	return
+}
+
+func (*repo) GetMovies(moviesRequest model.MoviesRequest) (movies []model.Movie, err error) {
+	ctx := context.Background()
+	app := GetApp()
+	client := app.GetDB()
+
+	collection := client.Collection(movieCollectionName)
+
+	offset := (moviesRequest.Page - 1) * moviesRequest.MovieCount
+
+	//offset + 1, first in collection is Stats not a movie
+	iter := collection.Offset(offset + 1).Limit(moviesRequest.MovieCount).Documents(ctx)
+	docs, err := iter.GetAll()
+
+	if err != nil {
+		return
+	}
+
+	defer client.Close()
+
+	movies = make([]model.Movie, len(docs))
+	var movie model.Movie
+
+	i := 0
+	for _, doc := range docs {
+		if doc.Ref.ID == statsRefId {
+			continue
+		}
+		err := doc.DataTo(&movie)
+		if err != nil {
+			logger.Println(err)
+			continue
+		}
+		movie.Id = doc.Ref.ID
+		movies[i] = movie
+		i++
+	}
+
+	logger.Printf("found movies %v", len(movies))
+
+	return
+}
+
+func (*repo) GetMovieById(id string) (movie model.Movie, err error) {
+	ctx := context.Background()
+	app := GetApp()
+	client := app.GetDB()
+
+	collection := client.Collection(movieCollectionName)
+
+	doc, err := collection.Doc(id).Get(ctx)
+
+	if err != nil {
+		logger.Printf("movie with id [%s] not found", id)
+		return
+	}
+
+	defer client.Close()
+
+	err = doc.DataTo(&movie)
+
+	if err != nil {
+		logger.Printf("Can't convert %v because %v", doc.Ref.Path, err)
+		return
+	}
+
+	logger.Printf("found movie %s", movie.Name)
+
+	return
+}
+
+func (*repo) GetMovieByDirectLink(directLink string) (movie model.Movie, err error) {
+	ctx := context.Background()
+	app := GetApp()
+	client := app.GetDB()
+
+	collection := client.Collection(movieCollectionName)
+
+	docs, err := collection.Where("directLink", "==", directLink).Documents(ctx).GetAll()
+
+	if err != nil {
+		logger.Printf("movie with directLink [%s] %v", directLink, err)
+		return
+	}
+
+	defer client.Close()
+
+	//Only one with unique direct link, if none found it will be error
+	doc := docs[0]
+
+	err = doc.DataTo(&movie)
+
+	if err != nil {
+		logger.Printf("Can't convert %v because %v", doc.Ref.Path, err)
+		return
+	}
+
+	logger.Printf("found movie %s by directLink", movie.Name)
 
 	return
 }
