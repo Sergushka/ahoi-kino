@@ -2,6 +2,7 @@ package graph
 
 import (
 	"github.com/graphql-go/graphql"
+	"github.com/sergushka/ahoi-kino/api/tmdb"
 	"github.com/sergushka/ahoi-kino/db"
 	"github.com/sergushka/ahoi-kino/log"
 	"github.com/sergushka/ahoi-kino/model"
@@ -12,6 +13,7 @@ var (
 )
 
 type GraphQLControllers interface {
+	GetTMDBAll(p graphql.ResolveParams) (interface{}, error)
 	GetGraphQLMovies(p graphql.ResolveParams) (interface{}, error)
 	GetGraphQLMovie(p graphql.ResolveParams) (interface{}, error)
 	UpdateGraphQLMovie(p graphql.ResolveParams) (interface{}, error)
@@ -23,6 +25,12 @@ type controller struct{}
 
 func NewControllers() GraphQLControllers {
 	return &controller{}
+}
+
+func (*controller) GetTMDBAll(p graphql.ResolveParams) (interface{}, error) {
+	name := p.Args["name"].(string)
+
+	return tmdb.GetTMDBMovies(name)
 }
 
 func (*controller) GetGraphQLMovies(p graphql.ResolveParams) (interface{}, error) {

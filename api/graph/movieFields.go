@@ -39,6 +39,17 @@ var movieFields = graphql.Fields{
 		},
 		Resolve: controllers.GetGraphQLMovie,
 	},
+	"tmdbSearch": &graphql.Field{
+		Type:        graphql.NewList(tmdbType),
+		Description: "Get tmdb movies and tv",
+		Args: graphql.FieldConfigArgument{
+			"name": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "tmdb search name",
+			},
+		},
+		Resolve: controllers.GetTMDBAll,
+	},
 }
 
 var movieMutationFields = graphql.Fields{

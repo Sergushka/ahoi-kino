@@ -223,3 +223,57 @@ var movieType = graphql.NewObject(
 		Description: "All about the movie",
 	},
 )
+
+var tmdbType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name:        "TMDB",
+		Description: "Tmdb movie or tv show",
+		Fields: graphql.Fields{
+			"poster_path": &graphql.Field{
+				Type: graphql.String,
+			},
+			"popularity": &graphql.Field{
+				Type: graphql.Float,
+			},
+			"vote_count": &graphql.Field{
+				Type: graphql.Int,
+			},
+			"video": &graphql.Field{
+				Type: graphql.Boolean,
+			},
+			"media_type": &graphql.Field{
+				Type: graphql.String,
+			},
+			"id": &graphql.Field{
+				Type: graphql.Int,
+			},
+			"adult": &graphql.Field{
+				Type: graphql.Boolean,
+			},
+			"backdrop_path": &graphql.Field{
+				Type: graphql.String,
+			},
+			"original_language": &graphql.Field{
+				Type: graphql.String,
+			},
+			"original_title": &graphql.Field{
+				Type: graphql.String,
+			},
+			"genre_ids": &graphql.Field{
+				Type: graphql.NewList(graphql.Int),
+			},
+			"title": &graphql.Field{
+				Type: graphql.String,
+			},
+			"vote_average": &graphql.Field{
+				Type: graphql.Float,
+			},
+			"overview": &graphql.Field{
+				Type: graphql.String,
+			},
+			"release_date": &graphql.Field{
+				Type: graphql.String,
+			},
+		},
+	},
+)
