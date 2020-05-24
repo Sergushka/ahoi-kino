@@ -1,6 +1,7 @@
 package db
 
 import (
+	"cloud.google.com/go/firestore"
 	"context"
 	"github.com/sergushka/ahoi-kino/model"
 )
@@ -12,6 +13,7 @@ type MovieRepository interface {
 	GetMovies(moviesRequest model.MoviesRequest) ([]model.Movie, error)
 	GetMovieById(id string) (model.Movie, error)
 	GetMovieByDirectLink(directLink string) (model.Movie, error)
+	UpdateMovieById(id string, update map[string]interface{}) (model.Movie, error)
 }
 
 type repo struct{}
@@ -180,6 +182,43 @@ func (*repo) GetMovieByDirectLink(directLink string) (movie model.Movie, err err
 
 	movie.Id = doc.Ref.ID
 	logger.Printf("found movie %s by directLink", movie.Name)
+
+	return
+}
+
+func (*repo) UpdateMovieById(id string, update map[string]interface{}) (movie model.Movie, err error) {
+	ctx := context.Background()
+	app := GetApp()
+	client := app.GetDB()
+
+	collection := client.Collection(movieCollectionName)
+
+	document := collection.Doc(id)
+
+	defer client.Close()
+
+	_, err = document.Set(ctx, update, firestore.MergeAll)
+
+	if err != nil {
+		logger.Printf("Can't update movie %v", err)
+		return
+	}
+
+	doc, err := document.Get(ctx)
+	if err != nil {
+		logger.Printf("Can't get movie %v", err)
+		return
+	}
+
+	err = doc.DataTo(&movie)
+
+	if err != nil {
+		logger.Printf("Can't convert movie %v", err)
+		return
+	}
+
+	movie.Id = id
+	logger.Printf("updated movie %s", movie.Name)
 
 	return
 }

@@ -14,6 +14,7 @@ var (
 type GraphQLControllers interface {
 	GetGraphQLMovies(p graphql.ResolveParams) (interface{}, error)
 	GetGraphQLMovie(p graphql.ResolveParams) (interface{}, error)
+	UpdateGraphQLMovie(p graphql.ResolveParams) (interface{}, error)
 }
 
 var controllers = NewControllers()
@@ -65,6 +66,21 @@ func (*controller) GetGraphQLMovie(p graphql.ResolveParams) (interface{}, error)
 			logger.Printf("Fuck %v", err)
 			return nil, err
 		}
+	}
+
+	return movie, nil
+}
+
+func (*controller) UpdateGraphQLMovie(p graphql.ResolveParams) (interface{}, error) {
+	database := db.NewRepository()
+
+	id := p.Args["id"].(string)
+
+	movie, err := database.UpdateMovieById(id, p.Args)
+
+	if err != nil {
+		logger.Printf("Fuck %v", err)
+		return nil, err
 	}
 
 	return movie, nil

@@ -8,6 +8,7 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/graphql-go/graphql v0.7.9
 	github.com/joho/godotenv v1.3.0
+	github.com/mitchellh/mapstructure v1.3.1
 	golang.org/x/net v0.0.0-20200513185701-a91f0712d120 // indirect
 	google.golang.org/api v0.24.0
 )
