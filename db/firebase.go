@@ -6,7 +6,9 @@ import (
 	firebase "firebase.google.com/go"
 	lg "github.com/sergushka/ahoi-kino/log"
 	"google.golang.org/api/option"
+	"io/ioutil"
 	"log"
+	"os"
 	"sync"
 )
 
@@ -24,7 +26,13 @@ var (
 )
 
 func initializeAppWithServiceAccount() *firebase.App {
-	opt := option.WithCredentialsFile("ahoy-kino-firebase-adminsdk-t8t71-11fca04300.json")
+	dat, err := ioutil.ReadFile(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+
+	if err != nil {
+		logger.Fatalf("error reading file : %v\n", err)
+	}
+
+	opt := option.WithCredentialsJSON(dat)
 
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 
