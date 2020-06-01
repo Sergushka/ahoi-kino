@@ -143,5 +143,3 @@ Firebase.
 АПИ для поиска: `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&language=en-US&query=${query}&page=1&include_adult=false`
 
 [документация themoviedb.org](https://developers.themoviedb.org/3/getting-started/introduction)
-
-ключ: f0844452c473688f4cc95d1d40e4a1d8
