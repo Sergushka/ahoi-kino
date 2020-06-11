@@ -17,23 +17,13 @@ var movieRoutes = []Route{
 		Handler: controllers.GetMovie,
 	},
 	{
-		Uri:     "/movies",
-		Method:  http.MethodPost,
-		Handler: controllers.AddMovie,
-	},
-	{
-		Uri:     "/movies/{id}",
-		Method:  http.MethodPut,
-		Handler: controllers.EditMovie,
-	},
-	{
-		Uri:     "/movies/{id}",
-		Method:  http.MethodDelete,
-		Handler: controllers.DeleteMovie,
-	},
-	{
 		Uri:     "/graphql",
 		Method:  http.MethodGet,
 		Handler: controllers.GraphQL,
+	},
+	{
+		Uri:     "/graphql",
+		Method:  http.MethodPost,
+		Handler: controllers.GraphQLPost,
 	},
 }

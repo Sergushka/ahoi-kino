@@ -73,14 +73,23 @@ func GraphQL(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 }
 
-func AddMovie(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("New movie added"))
-}
+func GraphQLPost(w http.ResponseWriter, r *http.Request) {
+	var graphQLRequest model.GraphQLRequest
+	err := json.NewDecoder(r.Body).Decode(&graphQLRequest)
 
-func EditMovie(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Movie edited"))
-}
+	if err != nil {
+		utils.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
 
-func DeleteMovie(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Movie deleted"))
+	params := graphql.Params{
+		Schema:         graph.New(),
+		OperationName:  graphQLRequest.OperationName,
+		RequestString:  graphQLRequest.Query,
+		VariableValues: graphQLRequest.Variables,
+	}
+
+	result := graphql.Do(params)
+
+	json.NewEncoder(w).Encode(result)
 }
