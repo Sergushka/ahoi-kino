@@ -15,7 +15,7 @@ jobs:
           with:
             go-version: ^1.13
           id: go
-        - run: go test ./test
+        - run: go test ../test
     
         - name: AWS SSM Send-Command
           uses: peterkimzz/aws-ssm-send-command@1.0.2
