@@ -2,16 +2,15 @@ name: Test the project and build docker container on aws
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [master, develop]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
         with:
@@ -41,7 +40,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-2
-          instance-ids: ${{ secrets.INSTANCE_ID }}
+          instance-ids: |
+            {{ secrets.INSTANCE_ID }}
           working-directory: /home/ec2-user/ahoi-kino
           command: git pull && docker-compose up -d
           comment: Pull and docker-compose
