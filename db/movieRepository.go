@@ -102,11 +102,10 @@ func (*repo) GetMovies(moviesRequest model.MoviesRequest) (movies []model.Movie,
 
 	defer client.Close()
 
-	movies = make([]model.Movie, len(docs))
-	var movie model.Movie
-
 	i := 0
 	for _, doc := range docs {
+		var movie model.Movie
+
 		if doc.Ref.ID == statsRefId {
 			continue
 		}
@@ -116,7 +115,7 @@ func (*repo) GetMovies(moviesRequest model.MoviesRequest) (movies []model.Movie,
 			continue
 		}
 		movie.Id = doc.Ref.ID
-		movies[i] = movie
+		movies = append(movies, movie)
 		i++
 	}
 
