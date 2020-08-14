@@ -42,5 +42,5 @@ jobs:
           aws-region: us-east-2
           instance-ids: ${{ secrets.INSTANCE_ID }}
           working-directory: /home/ec2-user/ahoi-kino
-          command: git pull && docker-compose up -d
-          comment: Pull and docker-compose via Github actions
+          command: git pull
+          comment: Pull new changes
