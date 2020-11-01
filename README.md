@@ -1,3 +1,5 @@
+![Project status](https://github.com/Sergushka/ahoi-kino/workflows/Test%20the%20project%20and%20build%20docker%20container%20on%20aws/badge.svg?branch=develop)
+
 # Как сейчас всё устроено
 
 Firebase.
